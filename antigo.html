@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastro de Propriedades Rurais</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-align">Cadastro de Propriedades Rurais</h1>
+        <form action="/submit" method="post">
+            <div class="input-field">
+                <input type="text" id="nome" name="nome" required>
+                <label for="nome">Nome da Propriedade:</label>
+            </div>
+            <div class="input-field">
+                <input type="text" id="dono" name="dono" required>
+                <label for="dono">Dono da Propriedade:</label>
+            </div>
+            <div class="input-field">
+                <input type="date" id="data" name="data" class="datepicker" required>
+                <label for="data">Data de Aquisição:</label>
+            </div>
+            <div class="input-field">
+                <input type="number" id="area" name="area" required>
+                <label for="area">Área em Hectares:</label>
+            </div>
+            <div class="input-field">
+                <input type="text" id="municipio" name="municipio" required>
+                <label for="municipio">Município:</label>
+            </div>
+            <div class="input-field">
+                <input type="number" id="preco" name="preco" required>
+                <label for="preco">Preço de Aquisição:</label>
+            </div>
+            <div class="input-field">
+                <input type="number" id="distancia" name="distancia" required>
+                <label for="distancia">Distância do Município (em km):</label>
+            </div>
+            <div class="input-field">
+                <input type="text" id="produto" name="produto" required>
+                <label for="produto">Produto Produzido:</label>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit">Cadastrar Propriedade
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.datepicker');
+            var instances = M.Datepicker.init(elems);
+        });
+    </script>
+</body>
+</html>
