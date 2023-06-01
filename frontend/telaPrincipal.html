@@ -35,6 +35,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
         document.getElementById('cadastro_pessoa').addEventListener('click', function() {
@@ -45,6 +46,25 @@
         document.getElementById('cadastro_propriedade').addEventListener('click', function() {
             window.location =('antigo.html');
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            const success = urlParams.get("success");
+            const error = urlParams.get("error");
+            if(success || error){
+                Swal.fire({
+                    icon: success ? 'success' : error ? 'error' : undefined,
+                    title: urlParams.get('title') || "",
+                    html: success || error,
+                    showConfirmButton: false,
+                    timer: urlParams.get("timer") || 1500
+                })
+                .then(() => {
+                    window.location.search = ""
+                })
+            }
+        })
     </script>
     
 </body>
