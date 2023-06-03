@@ -27,7 +27,10 @@ docker compose up -d
 
 # Rodando sem Docker
 
-Para rodar o trabalho sem o uso do **Docker**, você pode copiar o script em
-./db/CriarBanco e colocar em seu Gerenciador.
+Para rodar o trabalho sem o uso do **Docker**, você pode copiar os scripts em
+./db/CriarBanco e colocar em seu Gerenciador de Banco de Dados.
 O aplicativo roda tendo como base o nodejs, o node pode ser instalado neste
-[link](https://nodejs.org/en).
+[link](https://nodejs.org/en). Após instalar o node, rode o script **start.ps1** e
+siga as instruções. Caso houver algum problema com a execução de escript, rode
+o script **correctScript.ps1** como administrador, e depois rode novamente
+**start.ps1**.
