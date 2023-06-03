@@ -7,6 +7,10 @@
 
 # Instruções gerais
 
+O projeto pode ser rodado de duas formas diferentes, com ou sem o uso de **Docker**.
+Para rodar sem o uso de Docker será necessário utilizar um banco de dados **PostgreSQL**
+devidamente configurado, bem como um **Gerenciador de Banco de Dados**, como
+o **PgAdmin**, **DBeaver** ou outro qualquer.
 Para rodar o projeto você pode fazê-lo através do docker ou recriando o banco
 de dados e rodando a aplicação em nodejs. Recomendamos que apenas instale o Docker
 clicando [aqui](https://www.docker.com/) e siga as instruções **Rodando em Docker**
