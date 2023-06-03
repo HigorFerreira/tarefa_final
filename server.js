@@ -46,6 +46,14 @@ app.get('/find_municipio', async (req, res) => {
     })
 });
 
+app.get('/find_propriedade', async (req, res) => {
+    const results = await knex.raw("select id, nome as text from propriedade where nome ilike '%"+req.query.q+"%'")
+        .then(({rows}) => rows);
+    res.json({
+        results
+    })
+});
+
 // Rota para processar os dados enviados do formulário
 app.post('/cad_pessoa', async (req, res) => {
     const form = req.body
@@ -150,7 +158,7 @@ app.post('/cad_propriedade', async (req, res) => {
                 .insert({
                     nome,
                     dono_id,
-                    // data_aquisicao,
+                    data_aquisicao,
                     area,
                     preco,
                     municipio_id: parseInt(municipio_id)
@@ -167,6 +175,55 @@ app.post('/cad_propriedade', async (req, res) => {
     }
     catch(e){
         console.error(e);
+        res.redirect(`/telaPrincipal.html?${(() => {
+            return (new URLSearchParams(Object.entries({
+                title: 'Algo deu errado',
+                error: e.message,
+                timer: 5000
+            }))).toString()
+        })()}`)
+    }
+});
+
+app.post('/cad_produto', async (req, res) => {
+    try{
+        const {
+            nome,
+            data_provavel_colheita,
+            data_colheita_efetiva,
+            qtt_colher_prevista,
+            qtt_colhida,
+            propriedade,
+        } = req.body
+
+        await knex("produto")
+            .insert({
+                nome,
+                data_colheita_efetiva,
+                data_provavel_colheita,
+                qtt_colher_prevista,
+                qtt_colhida
+            })
+            .returning('id')
+            .then(([ { id: produto_id } ]) => {
+                return knex("propriedade_produto")
+                    .insert({
+                        produto_id,
+                        propriedade_id: parseInt(propriedade)
+                    })
+            })
+
+        res.redirect(`/telaPrincipal.html?${(() => {
+            return (new URLSearchParams(Object.entries({
+                title: 'Produto adicionado',
+                success: `Produto ${nome} adicionado com sucesso`,
+                timer: 3200
+            }))).toString()
+        })()}`);
+    }
+    catch(e){
+        console.log(e);
+
         res.redirect(`/telaPrincipal.html?${(() => {
             return (new URLSearchParams(Object.entries({
                 title: 'Algo deu errado',
