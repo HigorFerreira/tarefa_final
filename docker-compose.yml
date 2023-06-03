@@ -10,3 +10,8 @@ services:
       - 2424:5432
     environment:
       POSTGRES_PASSWORD: tarefa
+  app:
+    image: tarefa_app:latest
+    container_name: tarefa_app
+    ports:
+      - 80:3000
