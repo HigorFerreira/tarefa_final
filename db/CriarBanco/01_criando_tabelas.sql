@@ -58,7 +58,8 @@ create table public.dono (
 -- Criando a tabela Propriedade
 create table public.propriedade (
 	id serial not null,
-	data_aquisicao date not null,
+	nome varchar(255),
+	data_aquisicao date,
 	area int not null,
 	preco decimal not null,
 	municipio_id integer not null,

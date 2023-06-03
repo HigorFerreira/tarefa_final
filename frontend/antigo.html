@@ -6,21 +6,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
 </head>
 <body>
     <div class="container">
         <h1 class="center-align">Cadastro de Propriedades Rurais</h1>
-        <form action="/submit" method="post">
+        <form action="/cad_propriedade" method="post">
             <div class="input-field">
                 <input type="text" id="nome" name="nome" required>
                 <label for="nome">Nome da Propriedade:</label>
             </div>
             <div class="input-field">
-                <input type="text" id="dono" name="dono" required>
-                <label for="dono">Dono da Propriedade:</label>
+                <select name="dono" class="select2" id="dono"></select>                
             </div>
             <div class="input-field">
-                <input type="date" id="data" name="data" class="datepicker" required>
+                <input type="text" id="data" name="data" class="datepicker" required>
                 <label for="data">Data de Aquisição:</label>
             </div>
             <div class="input-field">
@@ -28,31 +29,49 @@
                 <label for="area">Área em Hectares:</label>
             </div>
             <div class="input-field">
-                <input type="text" id="municipio" name="municipio" required>
-                <label for="municipio">Município:</label>
+                <select name="municipio" class="select2" id="municipio"></select>                
             </div>
             <div class="input-field">
                 <input type="number" id="preco" name="preco" required>
                 <label for="preco">Preço de Aquisição:</label>
             </div>
-            <div class="input-field">
+            <!-- <div class="input-field">
                 <input type="number" id="distancia" name="distancia" required>
                 <label for="distancia">Distância do Município (em km):</label>
             </div>
             <div class="input-field">
                 <input type="text" id="produto" name="produto" required>
                 <label for="produto">Produto Produzido:</label>
-            </div>
+            </div> -->
             <button class="btn waves-effect waves-light" type="submit">Cadastrar Propriedade
                 <i class="material-icons right">send</i>
             </button>
         </form>
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var elems = document.querySelectorAll('.datepicker');
             var instances = M.Datepicker.init(elems);
+        });
+
+        $(document).ready(function() {
+            $('[name="dono"]').select2({
+                placeholder: 'Dono da propriedade',
+                ajax: {
+                    url: '/find_dono',
+                    dataType: 'json',
+                }
+            })
+            $('[name="municipio"]').select2({
+                placeholder: 'Município',
+                ajax: {
+                    url: '/find_municipio',
+                    dataType: 'json',
+                }
+            })
         });
     </script>
 </body>

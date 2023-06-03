@@ -30,6 +30,22 @@ app.get('/', (req, res) => {
     res.redirect('/telaPrincipal.html');
 })
 
+app.get('/find_dono', async (req, res) => {
+    const results = await knex.raw("select id, nome as text from pessoa p where nome ilike '%"+req.query.q+"%'")
+        .then(({rows}) => rows);
+    res.json({
+        results
+    })
+});
+
+app.get('/find_municipio', async (req, res) => {
+    const results = await knex.raw("select id, nome as text from municipio where nome ilike '%"+req.query.q+"%'")
+        .then(({rows}) => rows);
+    res.json({
+        results
+    })
+});
+
 // Rota para processar os dados enviados do formulário
 app.post('/cad_pessoa', async (req, res) => {
     const form = req.body
@@ -98,6 +114,53 @@ app.post('/cad_pessoa', async (req, res) => {
             return (new URLSearchParams(Object.entries({
                 title: 'Usuário adicionado',
                 success: `O usuário ${form.nome} foi adicionado com sucesso`,
+                timer: 3200
+            }))).toString()
+        })()}`);
+    }
+    catch(e){
+        console.error(e);
+        res.redirect(`/telaPrincipal.html?${(() => {
+            return (new URLSearchParams(Object.entries({
+                title: 'Algo deu errado',
+                error: e.message,
+                timer: 5000
+            }))).toString()
+        })()}`)
+    }
+});
+
+app.post('/cad_propriedade', async (req, res) => {
+    try{
+        const {
+            nome,
+            dono,
+            data: data_aquisicao,
+            area,
+            municipio: municipio_id,
+            preco,
+        } = req.body
+
+        await knex("dono").insert({
+            pessoa_id: parseInt(dono)
+        })
+        .returning('id')
+        .then(([{ id: dono_id }]) => {
+            return knex("propriedade")
+                .insert({
+                    nome,
+                    dono_id,
+                    // data_aquisicao,
+                    area,
+                    preco,
+                    municipio_id: parseInt(municipio_id)
+                })
+        })
+
+        res.redirect(`/telaPrincipal.html?${(() => {
+            return (new URLSearchParams(Object.entries({
+                title: 'Propriedade adicionada',
+                success: `Propriedade ${nome} adicionada com sucesso`,
                 timer: 3200
             }))).toString()
         })()}`);
