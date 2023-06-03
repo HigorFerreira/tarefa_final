@@ -70,7 +70,7 @@
                 <label for="nome">Nome:</label>
             </div>
             <div class="input-field">
-                <input type="text" id="cpf" name="cpf" pattern="(\d{3}\.){2}\d{3}-\d{2}" required>
+                <input type="text" id="cpf" name="cpf" required>
                 <label for="cpf">CPF:</label>
             </div>
             <div class="input-field">
@@ -89,6 +89,10 @@
                 <div class="input-field">
                     <input type="text" id="conjuge" name="conjuge">
                     <label for="conjuge">Nome do Cônjuge:</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="cpf" name="cpf_conjugue" required>
+                    <label for="cpf">CPF:</label>
                 </div>
             </fieldset>
             <button class="btn waves-effect waves-light" type="submit">Cadastrar Pessoa
@@ -110,9 +114,11 @@
             if (this.value === 'casado') {
                 conjugue.style.display = 'block';
                 document.querySelector('[name="conjuge"]').setAttribute("required", true)
+                document.querySelector('[name="cpf_conjugue"]').setAttribute("required", true)
             } else {
                 conjugue.style.display = 'none';
                 document.querySelector('[name="conjuge"]').removeAttribute("required")
+                document.querySelector('[name="cpf_conjugue"]').removeAttribute("required")
             }
         });
     </script>

@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    # restart: aways
+    container_name: tarefa_db
+    volumes:
+      - ./db/CriarBanco:/docker-entrypoint-initdb.d/
+    ports:
+      - 2424:5432
+    environment:
+      POSTGRES_PASSWORD: tarefa
