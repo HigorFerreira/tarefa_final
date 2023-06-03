@@ -1,9 +1,9 @@
 # Trabalho final
 
 > Higor Ferreira
-> João Banczek
-> Dayana Pamplona
-> Daniel Guedes
+    João Banczek
+    Dayana Pamplona
+    Daniel Guedes
 
 # Instruções gerais
 
@@ -24,3 +24,10 @@ docker build -t tarefa_app:latest .
 docker compose up -d
 ```
 4. Abra seu navegador e acesse **localhost**
+
+# Rodando sem Docker
+
+Para rodar o trabalho sem o uso do **Docker**, você pode copiar o script em
+./db/CriarBanco e colocar em seu Gerenciador.
+O aplicativo roda tendo como base o nodejs, o node pode ser instalado neste
+[link](https://nodejs.org/en).
