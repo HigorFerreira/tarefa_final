@@ -5,8 +5,8 @@ const app = express();
 const knex = require('knex')({
     client: 'pg',
     connection: {
-        host: 'db',
-        port: 5432,
+        host: process.env.NODE_ENV === 'development' ? 'localhost' : 'db',
+        port: process.env.NODE_ENV === 'development' ? 2424 : 5432,
         user: 'postgres',
         password: 'tarefa'
     }
@@ -225,6 +225,34 @@ app.post('/cad_produto', async (req, res) => {
         console.log(e);
 
         res.redirect(`/telaPrincipal.html?${(() => {
+            return (new URLSearchParams(Object.entries({
+                title: 'Algo deu errado',
+                error: e.message,
+                timer: 5000
+            }))).toString()
+        })()}`)
+    }
+});
+
+app.get('/pessoas', async (req, res) => {
+    try {
+        const pessoas = await knex.raw(`
+        select
+            p.id,
+            p.nome,
+            p.cpf,
+            p.data_nascimento,
+            p.casada,
+            p2.nome as conjuge,
+            p2.cpf as conjuge_cpf
+        from pessoa p
+        left join pessoa p2
+        on p.casada_com = p2.id 
+        `).then(({ rows }) => rows);
+        return res.json(pessoas)
+    }
+    catch(e){
+        return res.redirect(`/telaPrincipal.html?${(() => {
             return (new URLSearchParams(Object.entries({
                 title: 'Algo deu errado',
                 error: e.message,
