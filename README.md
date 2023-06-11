@@ -31,10 +31,37 @@ docker compose up -d
 
 # Rodando sem Docker
 
-Para rodar o trabalho sem o uso do **Docker**, você pode copiar os scripts em
-./db/CriarBanco e colocar em seu Gerenciador de Banco de Dados.
-O aplicativo roda tendo como base o nodejs, o node pode ser instalado neste
-[link](https://nodejs.org/en). Após instalar o node, rode o script **start.ps1** e
-siga as instruções. Caso houver algum problema com a execução de escript, rode
-o script **correctScript.ps1** como administrador, e depois rode novamente
-**start.ps1**.
+1. Copie os scripts em **./db/CriarBanco** e cole em seu *Gerenciador de banco de dados*
+de preferência para criar o banco de dados
+
+2. Caso não tenha, baixe e instale o **NodeJS** clicando neste [link](https://nodejs.org/en).
+
+3. Abra o **PowerShell do Windows em modo administrador e rode o seguinte comando:
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+4. Inicie o **PowerShell** do Windows a partir da pasta raiz do projeto. Ou inicie normalmente
+e navegue até a pasta
+
+5. A partir da pasta raiz do projeto, rode o script:
+```powershell
+.\start.ps1
+```
+
+5.1. Em **Insira o host do banco de dados**, digite **localhost** ou o ip da máquina em que seu banco
+está rodando
+
+5.2. Em **Insira a porta do banco de dados**, digite a porta **5432** ou a porta em que seu banco está rodando
+
+5.3. Em **Insira o nome de usuário do banco de dados**, digite **postgres** ou qualquer outro usuário que fora previamente
+configurado
+
+5.4. Em **Insira o nome da Database**, digite **postgres** ou qualquer outro db que tenha sido configurado
+
+5.5. Em **Insira a senha do banco de dados**, digite sua senha.
+
+O script então instalará as dependências necessárias para rodar o projeto e quando iniciar a aplicação
+a seguinte mensagem será exibida: **Servidor rodando na porta 3000**. Basta abrir o navegador de sua
+preferência e digitar **localhost:3000** para acessá-la
+

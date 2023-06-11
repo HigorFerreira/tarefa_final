@@ -8,6 +8,7 @@ const knex = require('knex')({
         host: process.env.NODE_ENV === 'development' ? process.env.DB_HOST ? process.env.DB_HOST : 'localhost' : 'db',
         port: process.env.NODE_ENV === 'development' ? process.env.DB_PORT ? process.env.DB_PORT : 2424 : 5432,
         user: process.env.DB_USER ? process.env.DB_USER : 'postgres',
+        database: process.env.NODE_ENV === 'development' ? process.env.DB_DATABASE ? process.env.DB_DATABASE : 'postgres' : 'postgres',
         password: process.env.DB_PASSWORD ? process.env.DB_PASSWORD : 'tarefa'
     }
 });
