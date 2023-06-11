@@ -57,7 +57,7 @@ Em **Insira a porta do banco de dados**, digite a porta **5432** ou a porta em q
 Em **Insira o nome de usuário do banco de dados**, digite **postgres** ou qualquer outro usuário que fora previamente
 configurado.\
 Em **Insira o nome da Database**, digite **postgres** ou qualquer outro db que tenha sido configurado.\
-Em **Insira a senha do banco de dados**, digite sua senha.\
+Em **Insira a senha do banco de dados**, digite sua senha.
 
 O script então instalará as dependências necessárias para rodar o projeto e quando iniciar a aplicação
 a seguinte mensagem será exibida: **Servidor rodando na porta 3000**. Basta abrir o navegador de sua
