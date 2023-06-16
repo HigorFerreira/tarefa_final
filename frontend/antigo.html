@@ -18,6 +18,12 @@
                 <label for="nome">Nome da Propriedade:</label>
             </div>
             <div class="input-field">
+                <select name="pessoa">
+                    <option value="pf" selected>Pessoa Física</option>
+                    <option value="pj">Pessoa Juridica</option>
+                </select>             
+            </div>
+            <div class="input-field">
                 <select name="dono" class="select2" id="dono"></select>                
             </div>
             <div class="input-field">
@@ -44,7 +50,7 @@
                 <label for="produto">Produto Produzido:</label>
             </div> -->
             <button class="btn waves-effect waves-light" type="submit">Cadastrar Propriedade
-                <i class="material-icons right">send</i>
+                <i class="material-icons right"></i>
             </button>
         </form>
     </div>
@@ -58,13 +64,39 @@
         });
 
         $(document).ready(function() {
-            $('[name="dono"]').select2({
-                placeholder: 'Dono da propriedade',
-                ajax: {
-                    url: '/find_dono',
-                    dataType: 'json',
+            $('[name="pessoa"]').select2({
+                placeholder: 'Pessoa',
+            });
+            $('[name="pessoa"]').on('select2:select', e => {
+                if(e.target.value === 'pf'){
+                    $('[name="dono"]').select2({
+                        placeholder: 'Dono da propriedade',
+                        ajax: {
+                            url: '/find_dono',
+                            dataType: 'json',
+                        }
+                    })
+                }
+                else{
+                    $('[name="dono"]').select2({
+                        placeholder: 'Dono da propriedade',
+                        ajax: {
+                            url: '/find_dono_entidade',
+                            dataType: 'json',
+                        }
+                    })
                 }
             })
+            $('[name="dono"]').select2((() => {
+                console.log($('[name="pessoa"]'));
+                return {
+                    placeholder: 'Dono da propriedade',
+                    ajax: {
+                        url: '/find_dono',
+                        dataType: 'json',
+                    }
+                }
+            })())
             $('[name="municipio"]').select2({
                 placeholder: 'Município',
                 ajax: {

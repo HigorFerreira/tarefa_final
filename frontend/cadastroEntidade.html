@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Cadastro de Propriedades Rurais</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-align">Cadastro Entidades</h1>
+        <form action="/cad_entidade" method="post">
+            <div class="input-field">
+                <input type="text" id="nome" name="nome" required>
+                <label for="nome">Nome da Entidade:</label>
+            </div>
+            <div class="input-field">
+                <input type="text" id="razao" name="razao" required>
+                <label for="razao">Razão social:</label>
+            </div>
+            <div class="input-field">
+                <select name="dono_id" class="select2" id="dono_id"></select>                
+            </div>
+            <div class="input-field">
+                <input type="text" id="cnpj" name="cnpj" required>
+                <label for="cnpj">CNPJ:</label>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit">Cadastrar Entidade
+                <i class="material-icons right"></i>
+            </button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.datepicker');
+            var instances = M.Datepicker.init(elems);
+        });
+
+        $(document).ready(function() {
+            $('[name="dono_id"]').select2({
+                placeholder: 'Dono da entidade',
+                ajax: {
+                    url: '/find_dono',
+                    dataType: 'json',
+                }
+            })
+        });
+    </script>
+</body>
+</html>

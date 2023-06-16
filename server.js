@@ -31,7 +31,25 @@ app.get('/', (req, res) => {
     res.redirect('/telaPrincipal.html');
 })
 
+app.get('/find_dono_entidade', async (req, res) => {
+    if(!req.query.q) return res.status(400);
+    return res.json({
+        results: await knex.raw(`
+        select
+            e.dono_id as id,
+            e.razao as text
+        from entidade e where e.razao ilike '%${req.query.q}%'
+        `).then(({rows}) => rows)
+    })
+});
+
 app.get('/find_dono', async (req, res) => {
+    if(!req.query.q){
+        return {
+            results: await knex.raw("select id, nome as text from pessoa")
+                .then(({rows}) => rows)
+        }
+    }
     const results = await knex.raw("select id, nome as text from pessoa p where nome ilike '%"+req.query.q+"%'")
         .then(({rows}) => rows);
     res.json({
@@ -150,6 +168,10 @@ app.post('/cad_propriedade', async (req, res) => {
             preco,
         } = req.body
 
+        console.log(req.body)
+
+        return res.send("OK")
+
         await knex("dono").insert({
             pessoa_id: parseInt(dono)
         })
@@ -218,6 +240,57 @@ app.post('/cad_produto', async (req, res) => {
             return (new URLSearchParams(Object.entries({
                 title: 'Produto adicionado',
                 success: `Produto ${nome} adicionado com sucesso`,
+                timer: 3200
+            }))).toString()
+        })()}`);
+    }
+    catch(e){
+        console.log(e);
+
+        res.redirect(`/telaPrincipal.html?${(() => {
+            return (new URLSearchParams(Object.entries({
+                title: 'Algo deu errado',
+                error: e.message,
+                timer: 5000
+            }))).toString()
+        })()}`)
+    }
+});
+
+app.post('/cad_entidade', async (req, res) => {
+    try{
+        const {
+            nome,
+            razao,
+            dono_id,
+            cnpj
+        } = req.body
+
+        if(!cnpj.match(/\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}/)){
+            throw new Error("O CNPJ deve ter o formato XX.XXX.XXX/0001-XX")
+        }
+
+        // console.log(req.body);
+
+        await knex("entidade")
+            .insert({
+                nome,
+                razao,
+                dono_id,
+                cnpj
+            })
+            .returning('id')
+            .then(([ { id: entidade_id } ]) => {
+                return knex("dono")
+                    .insert({
+                        entidade_id
+                    })
+            })
+
+        res.redirect(`/telaPrincipal.html?${(() => {
+            return (new URLSearchParams(Object.entries({
+                title: 'Entidade adicionada',
+                success: `Entidade adicionada com sucesso`,
                 timer: 3200
             }))).toString()
         })()}`);
