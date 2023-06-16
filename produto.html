@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Cadastro de Propriedades Rurais</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-align">Cadastro de produto</h1>
+        <form action="/cad_produto" method="post">
+            <div class="input-field">
+                <input type="text" id="nome" name="nome" required>
+                <label for="nome">Nome do produto:</label>
+            </div>
+            <div class="input-field">
+                <input type="text" id="data" name="data_provavel_colheita" class="datepicker" required>
+                <label for="data">Data de provável colheita:</label>
+            </div>
+            <div class="input-field">
+                <input type="text" id="data2" name="data_colheita_efetiva" class="datepicker" required>
+                <label for="data2">Data de colheita efetiva:</label>
+            </div>
+            
+            <div class="input-field">
+                <input type="number" id="qtprev" name="qtt_colher_prevista" required>
+                <label for="qtprev">Quantidade prevista para colher:</label>
+            </div>
+            <div class="input-field">
+                <input type="number" id="qtt" name="qtt_colhida" required>
+                <label for="qtt">Quantidade colhida:</label>
+            </div>
+
+            <div class="input-field">
+                <select name="propriedade"></select>                
+            </div>
+            <!-- <div class="input-field">
+                <input type="number" id="distancia" name="distancia" required>
+                <label for="distancia">Distância do Município (em km):</label>
+            </div>
+            <div class="input-field">
+                <input type="text" id="produto" name="produto" required>
+                <label for="produto">Produto Produzido:</label>
+            </div> -->
+            <button class="btn waves-effect waves-light" type="submit">Cadastrar Propriedade
+            </button>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.datepicker');
+            var instances = M.Datepicker.init(elems);
+        });
+
+        $(document).ready(function() {
+            $('[name="propriedade"]').select2({
+                placeholder: 'Propriedade do produto',
+                ajax: {
+                    url: '/find_propriedade',
+                    dataType: 'json',
+                }
+            })
+        });
+    </script>
+</body>
+</html>
