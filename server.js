@@ -36,10 +36,14 @@ app.get('/find_dono_entidade', async (req, res) => {
     return res.json({
         results: await knex.raw(`
         select
-            e.dono_id as id,
+            e.id as id,
             e.razao as text
         from entidade e where e.razao ilike '%${req.query.q}%'
         `).then(({rows}) => rows)
+            .then(res => {
+                console.log(res);
+                return res;
+            })
     })
 });
 
@@ -166,27 +170,42 @@ app.post('/cad_propriedade', async (req, res) => {
             area,
             municipio: municipio_id,
             preco,
-        } = req.body
+            pessoa,
+        } = req.body;
 
-        console.log(req.body)
-
-        return res.send("OK")
-
-        await knex("dono").insert({
-            pessoa_id: parseInt(dono)
-        })
-        .returning('id')
-        .then(([{ id: dono_id }]) => {
-            return knex("propriedade")
-                .insert({
-                    nome,
-                    dono_id,
-                    data_aquisicao,
-                    area,
-                    preco,
-                    municipio_id: parseInt(municipio_id)
-                })
-        })
+        await (() => new Promise(async (resolve, reject) => {
+            if(pessoa === "pf"){
+                resolve(
+                    knex("dono").insert({
+                        pessoa_id: parseInt(dono)
+                    })
+                    .returning('id')
+                );
+            }
+            else if(pessoa === "pj"){
+                resolve(
+                    knex("dono").insert({
+                        entidade_id: parseInt(dono)
+                    })
+                    .returning('id')
+                );
+            }
+            else{
+                reject(new Error("Wrong person type"));
+            }
+        }))()
+            .then(([{ id: dono_id }]) => {
+                console.log({ dono_id });
+                return knex("propriedade")
+                    .insert({
+                        nome,
+                        dono_id,
+                        data_aquisicao,
+                        area,
+                        preco,
+                        municipio_id: parseInt(municipio_id)
+                    })
+            })
 
         res.redirect(`/telaPrincipal.html?${(() => {
             return (new URLSearchParams(Object.entries({
@@ -333,6 +352,103 @@ app.get('/pessoas', async (req, res) => {
                 timer: 5000
             }))).toString()
         })()}`)
+    }
+});
+
+app.get('/propriedades/:pessoa', async (req, res) => {
+    try{
+        const { pessoa } = req.params;
+        if(pessoa === "pj"){
+            const propriedades = await knex.raw(`
+                select
+                    e.nome as entidade_nome,
+                    e.razao,
+                    e.cnpj,
+                    p.nome as dono_nome,
+                    p.cpf,
+                    pr.nome as propriedade_nome,
+                    pr.area,
+                    pr.preco,
+                    pr.data_aquisicao,
+                    json_build_object(
+                        'dono_id', dono.id,
+                        'entidade_id', e.id,
+                        'pessoa_id', p.id,
+                        'propriedade_id', pr.id
+                    ) as ids 
+                from (
+                    SELECT
+                        id, entidade_id
+                    FROM (
+                        SELECT id, entidade_id, ROW_NUMBER() OVER (PARTITION BY entidade_id ORDER BY id) AS rn
+                        FROM dono
+                        WHERE entidade_id IS NOT NULL
+                    ) AS subquery
+                ) as dono
+                left join entidade e on e.id = dono.entidade_id
+                left join pessoa p on p.id = e.dono_id
+                right join propriedade pr on pr.dono_id = dono.id
+                where e.nome is not null
+            `).then(({ rows }) => rows);
+            return res.json({ propriedades })
+        }
+        else if(pessoa === "pf"){
+            res.status(500).json({
+                message: 'Wrong'
+            })
+        }
+        else{
+            res.status(400).json({
+                message: 'tipo de pessoa deve ser fornecido'
+            })
+        }
+    }
+    catch(e){
+        console.error(e);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+});
+
+app.get("/rendimentos/:ano", async (req, res) => {
+    try{
+        const { ano } = req.params;
+        console.log({ ano })
+        const rendimentos = await knex.raw(`
+            select
+                pr.nome as propriedade,
+                pr.area,
+                p.qtt_colhida,
+                p.qtt_colhida / pr.area as rendimento,
+                p.data_colheita,
+                coalesce(ps.nome, e.razao) as proprietario,
+                'Milho' as produto    
+            from (
+                select
+                    sum(p.qtt_colhida) as qtt_colhida,
+                    pp.propriedade_id,
+                    min(p.data_colheita_efetiva) as data_colheita 
+                from propriedade_produto pp 
+                join produto p on p.id = pp.produto_id
+                where nome ~ '[Mm]ilho.*'
+                group by pp.propriedade_id
+            ) as p
+            left join propriedade pr on pr.id = p.propriedade_id
+            left join dono d on pr.dono_id = d.id
+            left join pessoa ps on ps.id = d.pessoa_id
+            left join entidade e on e.id = d.entidade_id
+            where extract(year from data_colheita) = ${ano}
+            order by rendimento desc
+        `).then(({ rows }) => rows);
+
+        res.json({ rendimentos });
+    }
+    catch(e){
+        console.error(e);
+        res.status(500).json({
+            message: e.message
+        })
     }
 });
 

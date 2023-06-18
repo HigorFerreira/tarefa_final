@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Cadastro de Propriedades Rurais</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-align">Propriedades de pessoas juridicas</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Pessoa física</th>
+                    <th>Nome da propriedade</th>
+                    <th>Tamanho</th>
+                    <th style="text-align: center;">Data de aquisição</th>
+                    <!-- <th style="text-align: center;">Conjuge</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            Swal.fire({
+                title: 'Carregando',
+                html: 'Carregando proprieades',
+                didOpen: function(){
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: '/propriedades/pj',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data, status, xhr) {
+                    var propriedades = data.propriedades ? data.propriedades : []
+                    var data = propriedades.reduce((a, { dono_nome, propriedade_nome, area, data_aquisicao }) => {
+                        return `${a}
+                        <tr>
+                            <td>${dono_nome}</td>
+                            <td>${propriedade_nome}</td>
+                            <td>${area} hectares</td>
+                            <td style="text-align: center">${
+                                moment(data_aquisicao)
+                                    .format('DD/MM/YYYY')
+                            }</td>
+                        </tr>
+                        `
+                    }, "")
+                    $('tbody').html(data);
+
+                    Swal.close();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Erro ao recuperar os dados: ', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro ao recuperar os dados',
+                        html: error,
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+            });
+        });
+    </script>
+</body>
+</html>
