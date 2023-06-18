@@ -452,6 +452,40 @@ app.get("/rendimentos/:ano", async (req, res) => {
     }
 });
 
+app.get("/produtos", async (req, res) => {
+    try{
+        const { ano } = req.query;
+        console.log({ ano })
+        const produtos = await knex.raw(`
+            select
+                p2.nome as propriedade,
+                p2.area,
+                p.nome as produto,
+                p.qtt_colhida,
+                json_build_object(
+                    'produto_id', p.id,
+                    'propriedade_id', p2.id
+                ) as ids
+            from propriedade_produto pp
+            left join produto p on p.id = pp.produto_id
+            left join propriedade p2 on p2.id = pp.propriedade_id${
+                ano
+                    ? `             where extract(year from p.data_colheita_efetiva) = ${ano}`
+                    : ""
+            }
+            order by pp.propriedade_id
+        `).then(({ rows }) => rows);
+
+        res.json({ produtos });
+    }
+    catch(e){
+        console.error(e);
+        res.status(500).json({
+            message: e.message
+        })
+    }
+});
+
 // Iniciar o servidor na porta 3000
 app.listen(3000, () => {
     console.log('Servidor rodando na porta 3000');
